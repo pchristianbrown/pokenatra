@@ -1,11 +1,16 @@
+# GET Requirements
+require 'pry'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'active_record'
+require 'pg'
+require_relative 'db/connection'
+require_relative 'models/pokemon.rb'
+require_relative 'models/team.rb'
+require_relative 'models/trainer.rb'
+require_relative 'models/show.rb'
 
-# require_relative 'db/seeds.rb'
-# require_relative 'db/schema.sql'
-# require_relative 'views/app.rb'
-
+# GET & POST
 get '/pokemons' do
     @pokemons = Pokemon.all
     erb :"pokemons/index"
@@ -15,25 +20,29 @@ get '/pokemons/new' do
   erb :"pokemons/new"
 end
 
-# get '/pokemons/:id' do
-#   @pokemon = Pokemon.find(params[:id])
-#   erb :"pokemons/show"
-# end
-#
-# post '/pokemons' do
-#   @pokemons = Pokemon.create(pokemon: params[:pokemon], cp: params[:cp])
-#   redirect "/pokemons/#{@pokemon.id}"
-# end
-#
-# get "/pokemon/:id/edit" do
-#   @name = Pokemon.find(params[:id])
-#   erb(:"pokemons/edit")
-# end
+get '/pokemons/trainer' do
+  erb :"pokemons/trainer"
+end
+
+get '/pokemons/:id' do
+  @pokemon = Pokemon.find(params[:id])
+  erb :"pokemons/show"
+end
+
+post '/pokemons' do
+  @pokemon = Pokemon.create(name: params[:name], cp: params[:cp], img_url: params[:img_url])
+  redirect "/pokemons/#{@pokemon.id}"
+  end
+
+get "/pokemons/:id/edit" do
+  @name = Pokemon.find(params[:id])
+  erb(:"pokemons/edit")
+end
 
 put '/pokemons/:id' do
   @pokemon = Pokemon.find(params[:id])
   @pokemon.update(params[:pokemon])
-  redirect("/pokemons/#{@pokemons.id}")
+  redirect("/pokemons/#{@pokemon.id}")
 end
 
 delete '/pokemons/:id' do
